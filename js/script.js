@@ -444,6 +444,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const createFeedbackUI = () => {
     const trigger = document.createElement("button");
     trigger.className = "v3-feedback-trigger";
+    trigger.style.display = "none";
     trigger.type = "button";
     trigger.textContent = "有想说的话";
 
@@ -536,15 +537,21 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     trigger.addEventListener("click", open);
-    closeButton.addEventListener("click", close);
 
-    overlay.addEventListener("click", (event) => {
-      if (event.target === overlay) close();
-    });
+const contactTrigger = document.getElementById("feedback-trigger");
+if (contactTrigger) {
+  contactTrigger.addEventListener("click", open);
+}
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") close();
-    });
+closeButton.addEventListener("click", close);
+
+overlay.addEventListener("click", (event) => {
+  if (event.target === overlay) close();
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") close();
+});
 
     let supabaseClient = null;
 
