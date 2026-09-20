@@ -1,28 +1,12 @@
-# Personal Homepage V1
+# Personal Homepage V2.5
 
-## Run
-Open `index.html` in a browser, or use VS Code + Live Server.
+V2.5 is based on the previous V2.5 detail-page shell and adds four matching internal pages:
 
-## Files
-- `index.html` — page structure
-- `css/style.css` — visual design
-- `js/script.js` — minimal V1 interaction
+- `personality.html` — Personality / 性格探索
+- `interests.html` — Interests / 兴趣爱好
+- `growth.html` — Growth / 学习与成长
+- `making.html` — Making / 正在创作
 
-## Replace before submission
-Search for these placeholders:
-- 你的中文名
-- YOUR ENGLISH NAME
-- YOUR CITY
-- YOUR UNIVERSITY
-- example@email.com
-- 一句话介绍的位置
+The four pages share the homepage visual language: warm paper background, soft geometric shapes, restrained typography, whitespace, and the same navigation/footer.
 
-## Git suggestion
-git init
-git add .
-git commit -m "Initial setup"
-
-Then make separate commits for:
-- V1 design complete
-- V1 content added
-- V1 final
+Interests uses three visual cards. Details are hidden by default and appear on hover/focus.
