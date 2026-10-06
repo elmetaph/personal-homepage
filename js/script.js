@@ -614,7 +614,7 @@ document.addEventListener("keydown", (event) => {
           submitButton.disabled = false;
           submitButton.textContent = "提交反馈";
           status.textContent = "";
-        }, 1400);
+        }, 2500);
       } catch (error) {
         console.error(error);
         status.textContent =
