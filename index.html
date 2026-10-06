@@ -108,10 +108,28 @@
               <div class="digital-dot dot-two"></div>
             </div>
             <div class="digital-me-content">
-              <p class="eyebrow">DIGITAL ME</p>
-              <h2>数字分身</h2>
-              <p class="digital-me-desc">一个正在形成的另一个我。</p>
-              <span class="digital-me-status">COMING LATER</span>
+              <div class="digital-me-heading">
+                <div><p class="eyebrow">DIGITAL ME</p><h2>数字分身</h2></div>
+                <span class="digital-me-status">ONLINE / ASK MET</span>
+              </div>
+              <p class="digital-me-desc">可以和另一个我聊几句。关于我的兴趣、学习和正在做的事，都可以问。</p>
+              <div class="digital-chat" id="digital-chat">
+                <div class="digital-chat-messages" id="digital-chat-messages" aria-live="polite">
+                  <div class="digital-message digital-message-met">
+                    <span class="digital-message-label">MET / DIGITAL</span>
+                    <p>嗨，我是 Met 的数字分身。随便问点什么。</p>
+                  </div>
+                </div>
+                <form class="digital-chat-form" id="digital-chat-form">
+                  <label class="sr-only" for="digital-chat-input">和 Met 的数字分身聊天</label>
+                  <textarea id="digital-chat-input" maxlength="500" rows="1" placeholder="问我点什么…"></textarea>
+                  <button type="submit" id="digital-chat-send"><span>发送</span><span>↗</span></button>
+                </form>
+                <div class="digital-chat-meta">
+                  <span id="digital-chat-status">ENTER 发送 · SHIFT + ENTER 换行</span>
+                  <span id="digital-chat-count">0 / 500</span>
+                </div>
+              </div>
             </div>
           </div>
         </section>

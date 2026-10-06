@@ -631,3 +631,215 @@ document.addEventListener("keydown", (event) => {
     initFeedback();
   }
 })();
+
+
+/* V4 — conversational Digital Me */
+(() => {
+  const ENDPOINT =
+    "https://dcmneceqanoydjiazezu.supabase.co/functions/v1/digital-me";
+
+  const init = () => {
+    const form = document.getElementById("digital-chat-form");
+    const input = document.getElementById("digital-chat-input");
+    const send = document.getElementById("digital-chat-send");
+    const box = document.getElementById("digital-chat-messages");
+    const status = document.getElementById("digital-chat-status");
+    const count = document.getElementById("digital-chat-count");
+
+    if (!form || !input || !send || !box || !status || !count) return;
+
+    const history = [];
+    let busy = false;
+
+    const scroll = () => {
+      box.scrollTop = box.scrollHeight;
+    };
+
+    const resize = () => {
+      input.style.height = "auto";
+      input.style.height = `${Math.min(input.scrollHeight, 120)}px`;
+    };
+
+    const update = () => {
+      count.textContent = `${input.value.length} / 500`;
+    };
+
+    const add = (role, text, extra = "") => {
+      const message = document.createElement("div");
+
+      message.className =
+        `digital-message ${
+          role === "user"
+            ? "digital-message-user"
+            : "digital-message-met"
+        } ${extra}`.trim();
+
+      const label = document.createElement("span");
+      label.className = "digital-message-label";
+      label.textContent =
+        role === "user" ? "YOU" : "MET / DIGITAL";
+
+      const paragraph = document.createElement("p");
+      paragraph.textContent = text;
+
+      message.append(label, paragraph);
+      box.appendChild(message);
+
+      scroll();
+
+      return message;
+    };
+
+    const setBusy = (value) => {
+      busy = value;
+
+      input.disabled = value;
+      send.disabled = value;
+
+      const text = send.querySelector("span:first-child");
+
+      if (text) {
+        text.textContent = value ? "思考中…" : "发送";
+      }
+    };
+
+    input.addEventListener("input", () => {
+      update();
+      resize();
+    });
+
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+
+        if (!busy) {
+          form.requestSubmit();
+        }
+      }
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (busy) return;
+
+      const message = input.value.trim();
+
+      if (!message) {
+        status.textContent = "先写点什么再发送。";
+        status.classList.add("digital-chat-status-error");
+        input.focus();
+        return;
+      }
+
+      const previousHistory = history.slice(-10);
+
+      add("user", message);
+
+      input.value = "";
+      update();
+      resize();
+
+      status.textContent = "正在等另一个我回话…";
+      status.classList.remove("digital-chat-status-error");
+
+      setBusy(true);
+
+      const thinking = add(
+        "model",
+        "……",
+        "digital-message-thinking"
+      );
+
+      try {
+        const response = await fetch(ENDPOINT, {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify({
+            message: message,
+            history: previousHistory,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data?.error || "数字分身暂时没有回应。"
+          );
+        }
+
+        const reply =
+          typeof data?.reply === "string"
+            ? data.reply.trim()
+            : "";
+
+        if (!reply) {
+          throw new Error("数字分身这次没有返回内容。");
+        }
+
+        thinking.remove();
+
+        add("model", reply);
+
+        history.push(
+          {
+            role: "user",
+            text: message,
+          },
+          {
+            role: "model",
+            text: reply,
+          }
+        );
+
+        if (history.length > 20) {
+          history.splice(0, history.length - 20);
+        }
+
+        status.textContent =
+          "ENTER 发送 · SHIFT + ENTER 换行";
+
+        status.classList.remove(
+          "digital-chat-status-error"
+        );
+      } catch (error) {
+        console.error("Digital Me error:", error);
+
+        thinking.remove();
+
+        // 失败后把访客刚才输入的内容恢复回来
+        input.value = message;
+
+        update();
+        resize();
+
+        status.textContent =
+          "刚才没连上。内容已经保留，可以再试一次。";
+
+        status.classList.add(
+          "digital-chat-status-error"
+        );
+      } finally {
+        setBusy(false);
+        input.focus();
+      }
+    });
+
+    update();
+    resize();
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded",
+      init
+    );
+  } else {
+    init();
+  }
+})();
